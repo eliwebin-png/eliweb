@@ -1084,7 +1084,7 @@ export default function HomePageView({
       {/* ==========================================================================
           PREVIOUS CLIENTS SHOWCASE SECTION
           ========================================================================== */}
-      <PreviousClientsSection onOpenModal={() => setIsModalOpen(true)} />
+      <PreviousClientsSection onOpenModal={() => setModalOpen(true)} />
 
       {/* ==========================================================================
           SECTION 6: FOOTER (DARK BACKGROUND)
