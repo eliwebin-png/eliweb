@@ -1,0 +1,183 @@
+// Prisma Schema for EliWeb
+
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "rhel-openssl-3.0.x", "debian-openssl-3.0.x"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model AdminUser {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model HeroContent {
+  id          String   @id @default(cuid())
+  headline    String
+  subtitle    String
+  cta1Label   String
+  cta1Url     String
+  cta2Label   String
+  cta2Url     String
+  trustPills  Json
+  tickerItems Json
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Service {
+  id          String   @id @default(cuid())
+  title       String
+  description String
+  category    String
+  imageUrl    String
+  tags        Json
+  items       Json
+  steps       Json
+  ctaLabel    String
+  order       Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Project {
+  id             String   @id @default(cuid())
+  name           String
+  category       String
+  tags           Json
+  description    String
+  imageUrl       String
+  featured       Boolean  @default(false)
+  homepageTeaser Boolean  @default(false)
+  order          Int      @default(0)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+model CaseStudy {
+  id          String   @id @default(cuid())
+  title       String
+  description String
+  results     String
+  imageUrl    String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Testimonial {
+  id        String   @id @default(cuid())
+  quote     String
+  name      String
+  role      String
+  avatarUrl String
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+}
+
+model Faq {
+  id        String   @id @default(cuid())
+  question  String
+  answer    String
+  page      String   @default("homepage")
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+}
+
+model TeamMember {
+  id        String   @id @default(cuid())
+  name      String
+  role      String
+  imageUrl  String
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+}
+
+model Stat {
+  id    String @id @default(cuid())
+  value String
+  label String
+  order Int    @default(0)
+}
+
+model TechTool {
+  id      String @id @default(cuid())
+  name    String
+  logoUrl String
+  order   Int    @default(0)
+}
+
+model AboutContent {
+  id    String @id @default(cuid())
+  key   String @unique
+  value String
+}
+
+model Value {
+  id    String @id @default(cuid())
+  icon  String
+  label String
+  order Int    @default(0)
+}
+
+model SiteSettings {
+  id    String @id @default(cuid())
+  key   String @unique
+  value String
+}
+
+model FooterLink {
+  id     String @id @default(cuid())
+  column String
+  label  String
+  url    String
+  order  Int    @default(0)
+}
+
+model ContactSubmission {
+  id        String   @id @default(cuid())
+  name      String
+  email     String
+  phone     String?
+  service   String?
+  budget    String?
+  message   String
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
+}
+
+model EnquirySubmission {
+  id          String   @id @default(cuid())
+  name        String
+  email       String
+  phone       String?
+  projectType String?
+  message     String
+  read      Boolean  @default(false)
+  createdAt   DateTime @default(now())
+}
+
+model NewsletterSubscriber {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
+}
+
+model Post {
+  id            String   @id @default(cuid())
+  title         String
+  slug          String   @unique
+  excerpt       String
+  content       String
+  coverImageUrl String
+  published     Boolean  @default(false)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
