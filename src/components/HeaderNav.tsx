@@ -26,18 +26,13 @@ export default function HeaderNav({ onOpenModal, alwaysVisible = false }: Header
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // If not always visible and not scrolled, do not render
-  if (!alwaysVisible && !scrolled) {
-    return null;
-  }
-
   const isLinkActive = (path: string) => {
     if (path === '/') return pathname === '/';
     return pathname?.startsWith(path);
   };
 
   return (
-    <header className={`site-header scrolled ${alwaysVisible ? 'always-visible' : ''}`} id="header">
+    <header className={`site-header ${scrolled ? 'scrolled' : ''} ${alwaysVisible ? 'always-visible' : ''}`} id="header">
       <div className="container header-inner">
         {/* 1. Left: Standalone Logo */}
         <Link href="/" className="hero-nav-logo-standalone" aria-label="EliWeb Home">

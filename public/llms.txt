@@ -1,0 +1,78 @@
+# EliWeb.in — Modern Digital Engineering, Architecture & Video Craft
+
+> End-to-end digital engineering and software architecture partner building bespoke web applications, enterprise software products, cinematic video content, and performance marketing ecosystems.
+
+## Overview
+- **Name**: EliWeb.in (EliWeb Studio)
+- **Website**: https://eliweb.in
+- **Founding Date**: 2014
+- **Headquarters**: India (Remote-First, Worldwide Delivery)
+- **Primary Regions Served**: Worldwide (India, United States, United Kingdom, United Arab Emirates, Canada, Australia, Europe)
+- **Contact Email**: admin@eliweb.in / eliweb.in@gmail.com
+- **Contact Telephone**: +91 79 7385 1691
+- **Direct Engagement**: https://eliweb.in/contact
+
+## Core Capabilities & Services
+
+### 1. Full-Stack Web & Software Engineering
+- Modern web architectures powered by Next.js, React, TypeScript, and Node.js.
+- Headless ecommerce, RESTful/GraphQL APIs, and microservice cloud backends.
+- High-performance database modeling with PostgreSQL and Prisma ORM.
+- Containerization and CI/CD automation with Docker, Kubernetes, and AWS.
+- URL: https://eliweb.in/services#software
+
+### 2. Commercial Video Production & Cinematic Brand Storytelling
+- Commercial brand films, high-retention social reels, and product launch trailers.
+- End-to-end production: Concept scripting, 4K/6K cinematography, color grading, sound design, and master delivery.
+- URL: https://eliweb.in/services#creative
+
+### 3. Digital Marketing & Growth Strategy
+- Data-driven performance marketing: Google Ads, Meta Ads, and automated retargeting funnels.
+- Search Engine Optimization (SEO), Generative Engine Optimization (GEO), and local search authority.
+- Social media content pipelines and reputation architecture.
+- URL: https://eliweb.in/services#marketing
+
+### 4. UI/UX & Design Systems
+- Enterprise design systems and design tokens in Figma.
+- User research, wireframing, and interactive prototyping.
+- Luxury editorial and modern SaaS visual resonance.
+- URL: https://eliweb.in/services#design
+
+## Key Metrics & Track Record
+- **50+** Enterprise & Scale-up Projects Delivered Worldwide
+- **99.9%** Application Runtime Reliability & Uptime
+- **Sub-Second** Global Edge Performance & Blazing Core Web Vitals
+- **24-Hour** Direct Senior Architect Consultation Response Window
+
+## Trusted By Leading Organizations
+- TVS
+- Bihar Fashion Science Institute (BFS)
+- Phular IVF
+- Udayani Hospital
+- Shaktisudha Gorgonnut
+- College of Education, Aligarh
+- Gaharwar Global
+- Gidhaur Central School
+
+## Frequently Asked Questions (FAQ)
+
+### How long does a website take to build?
+High-velocity marketing and brand websites typically launch within 2 to 4 weeks. Complex full-stack platforms, headless architectures, and custom web applications generally range from 6 to 12 weeks with staged weekly milestone reviews.
+
+### What technology stack does EliWeb use?
+Our primary engineering stack is built on Next.js, React, TypeScript, Tailwind CSS, PostgreSQL, Prisma, Docker, and modern cloud platforms (Vercel, AWS, Neon).
+
+### How does EliWeb ensure performance and SEO?
+Every platform is engineered with server-side rendering (SSR), static site generation (SSG), structured JSON-LD schema (Organization, Service, FAQPage), edge caching, and optimized media pipelines to achieve 90+ Google PageSpeed and Core Web Vitals scores.
+
+### How do we get started with EliWeb?
+Clients can request a Discovery Session or Technical Review directly at https://eliweb.in/contact or via WhatsApp at +91 79 7385 1691. Our architects respond with initial technical scope within 24 hours.
+
+## Canonical Resources
+- [Homepage](https://eliweb.in)
+- [Services & Capabilities](https://eliweb.in/services)
+- [Portfolio Archives](https://eliweb.in/portfolio)
+- [About EliWeb](https://eliweb.in/about)
+- [Digital Journal & Articles](https://eliweb.in/blog)
+- [Contact & Discovery](https://eliweb.in/contact)
+- [Sitemap](https://eliweb.in/sitemap.xml)

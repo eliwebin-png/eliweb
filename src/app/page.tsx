@@ -185,16 +185,54 @@ export default async function HomePage() {
   const serviceSchema = {
     '@context': 'https://schema.org',
     '@type': 'ProfessionalService',
-    name: 'EliWeb.in — Digital Engineering & Architecture',
+    name: 'EliWeb.in — Digital Engineering, Architecture & Video Craft',
+    alternateName: 'EliWeb Studio',
     url: siteUrl,
     image: `${siteUrl}/eliweb-logo.png`,
-    priceRange: '$$',
-    telephone: '+91-9876543210',
+    priceRange: '$$$',
+    telephone: settingsMap.phone || '+91-7973851691',
+    email: settingsMap.hello_email || 'admin@eliweb.in',
     address: {
       '@type': 'PostalAddress',
       addressCountry: 'IN',
+      addressLocality: settingsMap.location || 'India (Remote-First, Worldwide)',
     },
+    areaServed: [
+      'Worldwide',
+      'India',
+      'United States',
+      'United Kingdom',
+      'United Arab Emirates',
+      'Canada',
+      'Australia',
+    ],
+    knowsAbout: [
+      'Web Development',
+      'Next.js Full-Stack Architecture',
+      'React & TypeScript Engineering',
+      'Commercial Video Production',
+      'Digital Marketing & Paid Ads',
+      'SEO & Search Engine Visibility',
+      'UI/UX Design Systems',
+      'Cloud DevOps & Security',
+    ],
   };
+
+  const faqSchema =
+    faqs.length > 0
+      ? {
+          '@context': 'https://schema.org',
+          '@type': 'FAQPage',
+          mainEntity: faqs.map((f) => ({
+            '@type': 'Question',
+            name: f.question,
+            acceptedAnswer: {
+              '@type': 'Answer',
+              text: f.answer,
+            },
+          })),
+        }
+      : null;
 
   return (
     <>
@@ -206,6 +244,12 @@ export default async function HomePage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceSchema) }}
       />
+      {faqSchema && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+        />
+      )}
       <HomePageView
         hero={hero}
         stats={stats}

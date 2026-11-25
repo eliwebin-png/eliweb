@@ -8,7 +8,14 @@ import ModelTable from '@/components/admin/ModelTable';
 import ModelFormModal from '@/components/admin/ModelFormModal';
 import { modelConfigsMap } from '@/lib/admin/fields';
 
-type ActiveTab = 'hero' | 'stats' | 'services' | 'projects' | 'faqs' | 'instagram';
+type ActiveTab = 'hero' | 'clients' | 'stats' | 'services' | 'projects' | 'faqs' | 'instagram';
+
+interface ClientItemState {
+  id: string;
+  name: string;
+  logoUrl: string;
+  website?: string;
+}
 
 interface InstaPostItemState {
   url: string;
@@ -22,6 +29,23 @@ interface InstaPostItemState {
 export default function AdminHomePageEditor() {
   const [activeTab, setActiveTab] = useState<ActiveTab>('hero');
   const { showToast } = useToast();
+
+  // Our Clients section state
+  const [clientsList, setClientsList] = useState<ClientItemState[]>([
+    { id: '1', name: 'College of Education Aligarh', logoUrl: '/clients/college-of-education.png', website: '' },
+    { id: '2', name: 'Bihar Fashion Science Institute', logoUrl: '/clients/bfs-institute.png', website: '' },
+    { id: '3', name: 'Phular IVF', logoUrl: '/clients/phular-ivf.png', website: '' },
+    { id: '4', name: 'Udayani Hospital', logoUrl: '/clients/udayani-hospital.png', website: '' },
+    { id: '5', name: 'TVS Motor', logoUrl: '/clients/tvs-motor.png', website: 'https://www.tvsmotor.com' },
+    { id: '6', name: 'Shaktisudha Gorgonnut', logoUrl: '/clients/shaktisudha.png', website: '' },
+    { id: '7', name: 'Gaharwar Global', logoUrl: '/clients/gaharwar-global.png', website: '' },
+    { id: '8', name: 'Gidhaur Central School', logoUrl: '/clients/gidhaur-central-school.jpg', website: '' },
+  ]);
+  const [clientsBadge, setClientsBadge] = useState('Trusted by Leading Organizations');
+  const [clientsTitlePrefix, setClientsTitlePrefix] = useState('Our');
+  const [clientsTitleGradient, setClientsTitleGradient] = useState('Clients');
+  const [savingClients, setSavingClients] = useState(false);
+  const [uploadingClientLogoIdx, setUploadingClientLogoIdx] = useState<number | null>(null);
 
   // Model states for tables
   const [stats, setStats] = useState<Record<string, unknown>[]>([]);
@@ -59,6 +83,13 @@ export default function AdminHomePageEditor() {
 
   useEffect(() => {
     fetchAllSections();
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      const tab = params.get('tab');
+      if (tab === 'clients') {
+        setActiveTab('clients');
+      }
+    }
   }, []);
 
   useEffect(() => {
@@ -86,6 +117,17 @@ export default function AdminHomePageEditor() {
       if (Array.isArray(settingsRes)) {
         const map: Record<string, string> = {};
         settingsRes.forEach((s: any) => { map[s.key] = s.value; });
+        if (map.client_partners) {
+          try {
+            const arr = JSON.parse(map.client_partners);
+            if (Array.isArray(arr) && arr.length > 0) {
+              setClientsList(arr);
+            }
+          } catch {}
+        }
+        if (map.clients_badge) setClientsBadge(map.clients_badge);
+        if (map.clients_title_prefix) setClientsTitlePrefix(map.clients_title_prefix);
+        if (map.clients_title_gradient) setClientsTitleGradient(map.clients_title_gradient);
         if (map.instagram_posts) {
           try {
             const arr = JSON.parse(map.instagram_posts);
@@ -117,7 +159,25 @@ export default function AdminHomePageEditor() {
     if (activeTab === 'hero') return;
     setLoading(true);
     try {
-      if (activeTab === 'stats') {
+      if (activeTab === 'clients') {
+        const res = await fetch('/api/admin/site-settings');
+        if (res.ok) {
+          const list = await res.json();
+          if (Array.isArray(list)) {
+            const map: Record<string, string> = {};
+            list.forEach((s: any) => { map[s.key] = s.value; });
+            if (map.client_partners) {
+              try {
+                const arr = JSON.parse(map.client_partners);
+                if (Array.isArray(arr) && arr.length > 0) setClientsList(arr);
+              } catch {}
+            }
+            if (map.clients_badge) setClientsBadge(map.clients_badge);
+            if (map.clients_title_prefix) setClientsTitlePrefix(map.clients_title_prefix);
+            if (map.clients_title_gradient) setClientsTitleGradient(map.clients_title_gradient);
+          }
+        }
+      } else if (activeTab === 'stats') {
         const res = await fetch('/api/admin/stat');
         if (res.ok) setStats(await res.json());
       } else if (activeTab === 'services') {
@@ -179,6 +239,93 @@ export default function AdminHomePageEditor() {
       showToast('Failed to load section data', 'error');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleSaveClients = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setSavingClients(true);
+    try {
+      const payload = [
+        { key: 'client_partners', value: JSON.stringify(clientsList) },
+        { key: 'clients_badge', value: clientsBadge },
+        { key: 'clients_title_prefix', value: clientsTitlePrefix },
+        { key: 'clients_title_gradient', value: clientsTitleGradient },
+      ];
+
+      for (const item of payload) {
+        const res = await fetch('/api/admin/site-settings', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(item),
+        });
+        if (!res.ok) {
+          const err = await res.json();
+          throw new Error(err.error || 'Failed to update client setting');
+        }
+      }
+
+      showToast('Our Clients section updated successfully!', 'success');
+    } catch (err: any) {
+      showToast(err?.message || 'Failed to update clients', 'error');
+    } finally {
+      setSavingClients(false);
+    }
+  };
+
+  const handleAddClient = () => {
+    setClientsList((prev) => [
+      ...prev,
+      { id: String(Date.now()), name: '', logoUrl: '', website: '' },
+    ]);
+  };
+
+  const handleUpdateClient = (index: number, field: keyof ClientItemState, value: string) => {
+    setClientsList((prev) => {
+      const updated = [...prev];
+      updated[index] = { ...updated[index], [field]: value };
+      return updated;
+    });
+  };
+
+  const handleRemoveClient = (index: number) => {
+    setClientsList((prev) => prev.filter((_, i) => i !== index));
+  };
+
+  const handleMoveClient = (index: number, direction: 'up' | 'down') => {
+    setClientsList((prev) => {
+      const targetIndex = direction === 'up' ? index - 1 : index + 1;
+      if (targetIndex < 0 || targetIndex >= prev.length) return prev;
+      const copy = [...prev];
+      const item = copy[index];
+      copy[index] = copy[targetIndex];
+      copy[targetIndex] = item;
+      return copy;
+    });
+  };
+
+  const handleClientLogoUpload = async (index: number, file: File) => {
+    setUploadingClientLogoIdx(index);
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+
+      const res = await fetch('/api/upload', {
+        method: 'POST',
+        body: formData,
+      });
+
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.error || 'Upload failed');
+      }
+
+      handleUpdateClient(index, 'logoUrl', data.url);
+      showToast('Client logo uploaded successfully!', 'success');
+    } catch (err: any) {
+      showToast(err.message || 'Logo upload failed', 'error');
+    } finally {
+      setUploadingClientLogoIdx(null);
     }
   };
 
@@ -436,6 +583,19 @@ export default function AdminHomePageEditor() {
         </button>
         <button
           type="button"
+          onClick={() => setActiveTab('clients')}
+          style={{
+            ...styles.tabBtn,
+            ...(activeTab === 'clients' ? styles.tabBtnActive : {}),
+            background: activeTab === 'clients' ? 'linear-gradient(135deg, #0066FF, #00C2CB)' : '#141414',
+            borderColor: activeTab === 'clients' ? '#00C2CB' : '#262626',
+            color: activeTab === 'clients' ? '#FFFFFF' : '#aaa',
+          }}
+        >
+          🤝 Our Clients ({clientsList.length})
+        </button>
+        <button
+          type="button"
           onClick={() => setActiveTab('stats')}
           style={{ ...styles.tabBtn, ...(activeTab === 'stats' ? styles.tabBtnActive : {}) }}
         >
@@ -487,6 +647,232 @@ export default function AdminHomePageEditor() {
               </p>
             </div>
             <SingleRecordHero />
+          </div>
+        )}
+
+        {activeTab === 'clients' && (
+          <div>
+            <div style={styles.sectionInfo}>
+              <h2 style={styles.sectionHeading}>Our Clients &amp; Partners Carousel</h2>
+              <p style={styles.sectionDesc}>
+                Manage client logos and website links shown in the modern logo slider on the homepage. Upload client logos directly or paste an image URL, and configure clickable client website URLs.
+              </p>
+            </div>
+
+            <form onSubmit={handleSaveClients} style={styles.formCard}>
+              {/* Section Header Controls */}
+              <div style={styles.grid3}>
+                <div style={styles.formGroup}>
+                  <label style={styles.label}>Pill Badge Text</label>
+                  <input
+                    type="text"
+                    value={clientsBadge}
+                    onChange={(e) => setClientsBadge(e.target.value)}
+                    placeholder="Trusted by Leading Organizations"
+                    style={styles.input}
+                  />
+                </div>
+                <div style={styles.formGroup}>
+                  <label style={styles.label}>Title Prefix</label>
+                  <input
+                    type="text"
+                    value={clientsTitlePrefix}
+                    onChange={(e) => setClientsTitlePrefix(e.target.value)}
+                    placeholder="Our"
+                    style={styles.input}
+                  />
+                </div>
+                <div style={styles.formGroup}>
+                  <label style={styles.label}>Title Gradient Text</label>
+                  <input
+                    type="text"
+                    value={clientsTitleGradient}
+                    onChange={(e) => setClientsTitleGradient(e.target.value)}
+                    placeholder="Clients"
+                    style={styles.input}
+                  />
+                </div>
+              </div>
+
+              {/* Clients List */}
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '10px' }}>
+                <h3 style={{ fontSize: '1rem', fontWeight: 700, color: '#fff', margin: 0 }}>
+                  Client Partners List ({clientsList.length})
+                </h3>
+                <button
+                  type="button"
+                  onClick={handleAddClient}
+                  style={styles.addSmallBtn}
+                >
+                  + Add Client
+                </button>
+              </div>
+
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                {clientsList.map((client, index) => (
+                  <div key={client.id || index} style={styles.postCardBox}>
+                    <div style={styles.postCardHeader}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                        <span style={{ ...styles.postIndexBadge, color: '#00C2CB' }}>
+                          #{index + 1}
+                        </span>
+                        {client.logoUrl ? (
+                          <div style={{
+                            width: 38,
+                            height: 38,
+                            borderRadius: 8,
+                            background: '#FFFFFF',
+                            padding: 3,
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            border: '1px solid #333',
+                            overflow: 'hidden'
+                          }}>
+                            {/* eslint-disable-next-line @next/next/no-img-element */}
+                            <img
+                              src={client.logoUrl}
+                              alt={client.name || 'Logo preview'}
+                              style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }}
+                            />
+                          </div>
+                        ) : (
+                          <span style={styles.standardBadge}>No Logo</span>
+                        )}
+                        <strong style={{ color: '#fff', fontSize: '0.9rem' }}>
+                          {client.name || 'Untitled Client'}
+                        </strong>
+                      </div>
+
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                        <button
+                          type="button"
+                          onClick={() => handleMoveClient(index, 'up')}
+                          disabled={index === 0}
+                          style={{
+                            ...styles.clearImgBtn,
+                            padding: '4px 8px',
+                            cursor: index === 0 ? 'not-allowed' : 'pointer',
+                            opacity: index === 0 ? 0.3 : 1,
+                          }}
+                          title="Move Up"
+                        >
+                          ↑
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => handleMoveClient(index, 'down')}
+                          disabled={index === clientsList.length - 1}
+                          style={{
+                            ...styles.clearImgBtn,
+                            padding: '4px 8px',
+                            cursor: index === clientsList.length - 1 ? 'not-allowed' : 'pointer',
+                            opacity: index === clientsList.length - 1 ? 0.3 : 1,
+                          }}
+                          title="Move Down"
+                        >
+                          ↓
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => handleRemoveClient(index)}
+                          style={styles.removeBtn}
+                          title="Remove Client"
+                        >
+                          Remove
+                        </button>
+                      </div>
+                    </div>
+
+                    <div style={styles.grid2}>
+                      <div style={styles.formGroup}>
+                        <label style={styles.subLabel}>Client Name *</label>
+                        <input
+                          type="text"
+                          value={client.name}
+                          onChange={(e) => handleUpdateClient(index, 'name', e.target.value)}
+                          placeholder="e.g. TVS Motor, Phular IVF, Gaharwar Global"
+                          style={styles.input}
+                          required
+                        />
+                      </div>
+
+                      <div style={styles.formGroup}>
+                        <label style={styles.subLabel}>Client Website Link (Optional)</label>
+                        <div style={{ display: 'flex', gap: '8px' }}>
+                          <input
+                            type="url"
+                            value={client.website || ''}
+                            onChange={(e) => handleUpdateClient(index, 'website', e.target.value)}
+                            placeholder="https://example.com"
+                            style={{ ...styles.input, flex: 1 }}
+                          />
+                          {client.website && (
+                            <a
+                              href={client.website}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              style={styles.previewLink}
+                              title="Test link in new tab"
+                            >
+                              ↗ Test Link
+                            </a>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+
+                    <div>
+                      <label style={styles.subLabel}>Client Logo URL / File *</label>
+                      <div style={{ display: 'flex', gap: '10px', alignItems: 'center', flexWrap: 'wrap' }}>
+                        <input
+                          type="text"
+                          value={client.logoUrl}
+                          onChange={(e) => handleUpdateClient(index, 'logoUrl', e.target.value)}
+                          placeholder="/clients/... or https://..."
+                          style={{ ...styles.input, flex: 1, minWidth: '240px' }}
+                          required
+                        />
+                        <label style={{ ...styles.uploadBtn, backgroundColor: '#0284c7', borderColor: '#38bdf8' }}>
+                          {uploadingClientLogoIdx === index ? 'Uploading...' : '📁 Upload Logo File'}
+                          <input
+                            type="file"
+                            accept="image/*"
+                            style={{ display: 'none' }}
+                            onChange={(e) => {
+                              const file = e.target.files?.[0];
+                              if (file) handleClientLogoUpload(index, file);
+                            }}
+                          />
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              <div style={{ display: 'flex', gap: '12px', alignItems: 'center', marginTop: '12px' }}>
+                <button
+                  type="submit"
+                  disabled={savingClients}
+                  style={{
+                    ...styles.saveBtn,
+                    background: 'linear-gradient(135deg, #0066FF, #00C2CB)',
+                    boxShadow: '0 4px 14px rgba(0, 194, 203, 0.35)',
+                    cursor: savingClients ? 'wait' : 'pointer',
+                  }}
+                >
+                  {savingClients ? 'Saving Clients...' : '💾 Save Clients Section'}
+                </button>
+                <button
+                  type="button"
+                  onClick={handleAddClient}
+                  style={{ ...styles.uploadBtn, background: '#1c1c1c' }}
+                >
+                  + Add Another Client
+                </button>
+              </div>
+            </form>
           </div>
         )}
 
@@ -937,6 +1323,11 @@ const styles: Record<string, React.CSSProperties> = {
   grid2: {
     display: 'grid',
     gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+    gap: '16px',
+  },
+  grid3: {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
     gap: '16px',
   },
   formGroup: {

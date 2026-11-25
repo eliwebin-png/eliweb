@@ -7,58 +7,73 @@ export interface ClientItem {
   id: string;
   name: string;
   logoUrl: string;
+  website?: string;
 }
 
-const DEFAULT_CLIENTS: ClientItem[] = [
+export const DEFAULT_CLIENTS: ClientItem[] = [
   {
     id: 'client-college-education',
     name: 'College of Education Aligarh',
     logoUrl: '/clients/college-of-education.png',
+    website: '',
   },
   {
     id: 'client-bfs',
     name: 'Bihar Fashion Science Institute',
     logoUrl: '/clients/bfs-institute.png',
+    website: '',
   },
   {
     id: 'client-phular',
     name: 'Phular IVF',
     logoUrl: '/clients/phular-ivf.png',
+    website: '',
   },
   {
     id: 'client-udayani',
     name: 'Udayani Hospital',
     logoUrl: '/clients/udayani-hospital.png',
+    website: '',
   },
   {
     id: 'client-tvs',
     name: 'TVS Motor',
     logoUrl: '/clients/tvs-motor.png',
+    website: 'https://www.tvsmotor.com',
   },
   {
     id: 'client-shaktisudha',
     name: 'Shaktisudha Gorgonnut',
     logoUrl: '/clients/shaktisudha.png',
+    website: '',
   },
   {
     id: 'client-gaharwar',
     name: 'Gaharwar Global',
     logoUrl: '/clients/gaharwar-global.png',
+    website: '',
   },
   {
     id: 'client-gidhaur',
     name: 'Gidhaur Central School',
     logoUrl: '/clients/gidhaur-central-school.jpg',
+    website: '',
   },
 ];
 
 interface PreviousClientsSectionProps {
   clients?: ClientItem[];
+  badgeText?: string;
+  titlePrefix?: string;
+  titleGradient?: string;
   onOpenModal?: () => void;
 }
 
 export default function PreviousClientsSection({
   clients: customClients,
+  badgeText = 'Trusted by Leading Organizations',
+  titlePrefix = 'Our',
+  titleGradient = 'Clients',
   onOpenModal,
 }: PreviousClientsSectionProps) {
   const clientsList = customClients && customClients.length > 0 ? customClients : DEFAULT_CLIENTS;
@@ -66,6 +81,7 @@ export default function PreviousClientsSection({
   const [activeDot, setActiveDot] = useState(0);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(true);
+  const [isHovered, setIsHovered] = useState(false);
 
   // Update scroll indicators and active dot on scroll
   const handleScroll = useCallback(() => {
@@ -110,8 +126,9 @@ export default function PreviousClientsSection({
     setActiveDot(dotIndex);
   };
 
-  // Auto-scroll carousel every 4 seconds
+  // Auto-scroll carousel every 4 seconds when not hovered
   useEffect(() => {
+    if (isHovered) return;
     const timer = setInterval(() => {
       if (!trackRef.current) return;
       const { scrollLeft, scrollWidth, clientWidth } = trackRef.current;
@@ -123,10 +140,16 @@ export default function PreviousClientsSection({
     }, 4000);
 
     return () => clearInterval(timer);
-  }, []);
+  }, [isHovered]);
 
   return (
-    <section className="our-clients-modern-section" id="clients" aria-label="Our Clients">
+    <section
+      className="our-clients-modern-section"
+      id="clients"
+      aria-label="Our Clients"
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
       {/* Background Decorative Ambient Shapes */}
       <div className="clients-ambient-glow-tl" aria-hidden="true" />
       <div className="clients-ambient-glow-br" aria-hidden="true" />
@@ -134,34 +157,16 @@ export default function PreviousClientsSection({
       <div className="clients-dot-matrix-bl" aria-hidden="true" />
 
       <div className="our-clients-container">
-        {/* Top Centered Header with Flanking Divider Lines */}
-        <div className="clients-top-header-row">
-          <div className="clients-header-line-left" />
-          
-          <div className="clients-trust-pill-badge">
-            <span className="clients-trust-handshake" aria-hidden="true">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M11 17a1 1 0 0 1-1-1v-2a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2a1 1 0 0 1-1 1h-4Z" />
-                <path d="m18 10 3.5-3.5a2.12 2.12 0 0 0-3-3L15 7" />
-                <path d="m6 10-3.5-3.5a2.12 2.12 0 0 1 3-3L9 7" />
-                <path d="M14 11V9a2 2 0 0 0-2-2h-2a2 2 0 0 0-2 2v2" />
-                <path d="M10 21v-2" />
-                <path d="M14 21v-2" />
-              </svg>
-            </span>
-            <span className="clients-trust-text">Trusted by Leading Organizations</span>
-          </div>
-
-          <div className="clients-header-line-right" />
-        </div>
-
-        {/* Section Heading: Our Clients */}
-        <h2 className="our-clients-title">
-          Our <span className="clients-title-gradient">Clients</span>
-        </h2>
-
         {/* Carousel Slider with Navigation Arrows */}
         <div className="our-clients-slider-wrapper">
+          {/* Left Inline "Our Clients" Box (Right before the logos / navigation arrow) */}
+          <div className="clients-inline-title-box">
+            <span className="clients-inline-tag">{badgeText || '✦ TRUSTED'}</span>
+            <h3 className="clients-inline-title">
+              {titlePrefix} <span className="clients-title-gradient">{titleGradient}</span>
+            </h3>
+          </div>
+
           {/* Left Arrow Button */}
           <button
             type="button"
@@ -176,20 +181,47 @@ export default function PreviousClientsSection({
 
           {/* Cards Scroll Track */}
           <div className="our-clients-scroll-track" ref={trackRef}>
-            {clientsList.map((client) => (
-              <div key={client.id} className="client-white-card" title={client.name}>
+            {clientsList.map((client) => {
+              const hasLink = Boolean(client.website && client.website.trim().length > 0);
+              const cardContent = (
                 <div className="client-white-card-inner">
                   <Image
-                    src={client.logoUrl}
-                    alt={client.name}
+                    src={client.logoUrl || '/eliweb-logo.png'}
+                    alt={client.name || 'Client Logo'}
                     width={130}
                     height={100}
                     className="client-card-logo-img"
                     unoptimized
                   />
+                  {hasLink && (
+                    <span className="client-external-link-hint" title={`Visit ${client.name}`}>
+                      ↗
+                    </span>
+                  )}
                 </div>
-              </div>
-            ))}
+              );
+
+              if (hasLink) {
+                return (
+                  <a
+                    key={client.id}
+                    href={client.website}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="client-white-card client-card-clickable"
+                    title={`Visit ${client.name} (${client.website})`}
+                  >
+                    {cardContent}
+                  </a>
+                );
+              }
+
+              return (
+                <div key={client.id} className="client-white-card" title={client.name}>
+                  {cardContent}
+                </div>
+              );
+            })}
           </div>
 
           {/* Right Arrow Button */}

@@ -33,12 +33,26 @@ export default function AdminSidebar() {
   };
 
   const isCurrent = (path: string) => {
+    if (path.includes('?')) {
+      const [base, query] = path.split('?');
+      if (typeof window !== 'undefined') {
+        return pathname === base && window.location.search.includes(query);
+      }
+      return false;
+    }
     if (path === '/admin') return pathname === '/admin';
+    if (path === '/admin/pages/home') {
+      if (typeof window !== 'undefined' && window.location.search.includes('tab=clients')) {
+        return false;
+      }
+      return pathname === '/admin/pages/home';
+    }
     return pathname.startsWith(path);
   };
 
   const pageLinks = [
     { href: '/admin/pages/home', label: 'Home Page', icon: '🏠' },
+    { href: '/admin/pages/home?tab=clients', label: 'Our Clients', icon: '🤝' },
     { href: '/admin/pages/about', label: 'About Page', icon: '🏢' },
     { href: '/admin/pages/services', label: 'Service Page', icon: '⚡' },
     { href: '/admin/pages/portfolio', label: 'Portfolio Page', icon: '💼' },

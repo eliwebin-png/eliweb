@@ -88,6 +88,21 @@ export default function HomePageView({
   }, [headlineItems]);
 
   const [headlineIdx, setHeadlineIdx] = useState(0);
+
+  // Client partners parsed from DB SiteSettings
+  const clientPartners = useMemo(() => {
+    if (settings?.client_partners) {
+      try {
+        const arr = JSON.parse(settings.client_partners);
+        if (Array.isArray(arr) && arr.length > 0) {
+          return arr;
+        }
+      } catch (err) {
+        console.error('Failed to parse client_partners settings:', err);
+      }
+    }
+    return undefined;
+  }, [settings?.client_partners]);
   const [headlineTransition, setHeadlineTransition] = useState(true);
   const [headlinePaused, setHeadlinePaused] = useState(false);
 
@@ -925,9 +940,27 @@ export default function HomePageView({
                 </div>
               </div>
             </div>
+          </div>
+        </section>
 
+        {/* ==========================================================================
+            OUR CLIENTS SHOWCASE SECTION (JUST AFTER METHODOLOGY)
+            ========================================================================== */}
+        <PreviousClientsSection
+          clients={clientPartners}
+          badgeText={settings?.clients_badge || 'Trusted by Leading Organizations'}
+          titlePrefix={settings?.clients_title_prefix || 'Our'}
+          titleGradient={settings?.clients_title_gradient || 'Clients'}
+          onOpenModal={() => setModalOpen(true)}
+        />
+
+        {/* ==========================================================================
+            PORTFOLIO ARCHIVES
+            ========================================================================== */}
+        <section className="feature-section feature-section-portfolio" id="portfolio">
+          <div className="container">
             {/* Variation 2: Asymmetric Image Grid (8 Tiles across 2 Rows from Wireframe) */}
-            <div className="asymmetric-grid-section" id="portfolio">
+            <div className="asymmetric-grid-section">
               <div className="grid-section-header">
                 <div>
                   <span className="section-eyebrow">PORTFOLIO ARCHIVES</span>
@@ -1080,11 +1113,6 @@ export default function HomePageView({
           </div>
         </section>
       </main>
-
-      {/* ==========================================================================
-          PREVIOUS CLIENTS SHOWCASE SECTION
-          ========================================================================== */}
-      <PreviousClientsSection onOpenModal={() => setModalOpen(true)} />
 
       {/* ==========================================================================
           SECTION 6: FOOTER (DARK BACKGROUND)
