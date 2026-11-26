@@ -88,6 +88,15 @@ export default function HeaderNav({ onOpenModal, alwaysVisible = false }: Header
           </Link>
         </nav>
 
+        {/* Backdrop for mobile drawer */}
+        {mobileOpen && (
+          <div
+            className="mobile-nav-backdrop"
+            onClick={() => setMobileOpen(false)}
+            aria-hidden="true"
+          />
+        )}
+
         {/* 3. Right: Language Changer */}
         <div className="header-actions">
           <div className="hero-nav-lang-slot">

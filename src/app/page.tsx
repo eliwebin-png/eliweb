@@ -191,7 +191,7 @@ export default async function HomePage() {
     image: `${siteUrl}/eliweb-logo.png`,
     priceRange: '$$$',
     telephone: settingsMap.phone || '+91-7973851691',
-    email: settingsMap.hello_email || 'admin@eliweb.in',
+    email: settingsMap.hello_email || 'eliweb.in@gmail.com',
     address: {
       '@type': 'PostalAddress',
       addressCountry: 'IN',
@@ -221,17 +221,17 @@ export default async function HomePage() {
   const faqSchema =
     faqs.length > 0
       ? {
-          '@context': 'https://schema.org',
-          '@type': 'FAQPage',
-          mainEntity: faqs.map((f) => ({
-            '@type': 'Question',
-            name: f.question,
-            acceptedAnswer: {
-              '@type': 'Answer',
-              text: f.answer,
-            },
-          })),
-        }
+        '@context': 'https://schema.org',
+        '@type': 'FAQPage',
+        mainEntity: faqs.map((f) => ({
+          '@type': 'Question',
+          name: f.question,
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: f.answer,
+          },
+        })),
+      }
       : null;
 
   return (

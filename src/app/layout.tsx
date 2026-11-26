@@ -96,7 +96,7 @@ export default function RootLayout({
     image: `${siteUrl}/eliweb-logo.png`,
     description:
       'End-to-end digital engineering and software architecture partner building bespoke web apps, digital products, and brand media systems.',
-    foundingDate: '2014',
+    foundingDate: '2024',
     address: {
       '@type': 'PostalAddress',
       addressCountry: 'IN',

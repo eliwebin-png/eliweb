@@ -227,7 +227,7 @@ export default function AdminAboutPageEditor() {
                 rows={4}
                 value={aboutEntries.story_body}
                 onChange={(e) => setAboutEntries({ ...aboutEntries, story_body: e.target.value })}
-                placeholder="Founded in 2014, EliWeb was created with a clear thesis..."
+                placeholder="Founded in 2024, EliWeb was created with a clear thesis..."
                 style={styles.textarea}
               />
             </div>

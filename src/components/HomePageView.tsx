@@ -334,7 +334,7 @@ export default function HomePageView({
                   <div className="hero-upper-left">
                     <div className="hero-eyebrow-pill">
                       <span className="pulse-dot"></span>
-                      <span>EST. 2014 &bull; MODERN DIGITAL ATELIER</span>
+                      <span>EST. 2024 &bull; MODERN DIGITAL ATELIER</span>
                     </div>
 
                     <h1
@@ -488,6 +488,31 @@ export default function HomePageView({
                           <span className="review-card-label">Google Reviews</span>
                         </div>
                       </div>
+                    </div>
+                  </div>
+
+                  {/* Mobile In-Flow Video (shows directly after Upwork & Review stars on mobile) */}
+                  <div className="hero-mobile-video-slot" aria-hidden="true">
+                    <div className="hero-mobile-video-card">
+                      <video
+                        className="hero-mobile-video-element"
+                        autoPlay
+                        muted
+                        loop
+                        playsInline
+                        preload="auto"
+                        onLoadedMetadata={(e) => {
+                          e.currentTarget.playbackRate = 2.0;
+                        }}
+                        onPlay={(e) => {
+                          e.currentTarget.playbackRate = 2.0;
+                        }}
+                      >
+                        <source
+                          src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260508_215831_c6a8989c-d716-4d8d-8745-e972a2eec711.mp4"
+                          type="video/mp4"
+                        />
+                      </video>
                     </div>
                   </div>
 

@@ -90,7 +90,7 @@ export default async function AboutPage() {
   }));
 
   const storyHeading = aboutMap.story_heading || 'Where Software Architecture Meets Design Elegance';
-  const storyBody = aboutMap.story_body || 'Founded in 2014, EliWeb was created with a clear thesis: digital experiences must never force brands to choose between uncompromising technical speed and visual distinction.';
+  const storyBody = aboutMap.story_body || 'Founded in 2024, EliWeb was created with a clear thesis: digital experiences must never force brands to choose between uncompromising technical speed and visual distinction.';
   const missionText = aboutMap.mission || 'Every line of code we push to Neon PostgreSQL and Next.js App Router is optimized for extreme resilience, microsecond data hydration, and seamless cross-platform rendering.';
 
   const siteUrl = (process.env.NEXTAUTH_URL || 'https://eliweb.in').replace(/\/$/, '');
@@ -115,7 +115,7 @@ export default async function AboutPage() {
         <section className="subpage-hero">
           <div className="container subpage-hero-inner">
             <div className="subpage-badge">
-              <span>✦ WHO WE ARE &bull; EST. 2014</span>
+              <span>✦ WHO WE ARE &bull; EST. 2024</span>
             </div>
             <h1 className="subpage-title">
               Engineering Digital Architecture &amp; Brand Elegance
