@@ -11,6 +11,7 @@ const DEFAULT_SERVICES = [
   { id: 'Cinematic Video Craft', label: 'Cinematic Video', icon: '🎬' },
   { id: 'Performance Digital Marketing', label: 'Digital Marketing', icon: '📈' },
   { id: 'Full Digital Transformation', label: 'Full Transformation', icon: '⚡' },
+  { id: 'other', label: 'Other', icon: '😊' },
 ];
 
 const BUDGET_RANGES = [
@@ -44,13 +45,13 @@ export default function ContactPageView({
 
   const servicesList = services.length > 0
     ? services.map((s, idx) => {
-        const icons = ['💻', '🎨', '🎬', '📈', '⚡', '🚀'];
-        return {
-          id: s.title,
-          label: s.title,
-          icon: icons[idx % icons.length],
-        };
-      })
+      const icons = ['💻', '🎨', '🎬', '📈', '⚡', '🚀'];
+      return {
+        id: s.title,
+        label: s.title,
+        icon: icons[idx % icons.length],
+      };
+    })
     : DEFAULT_SERVICES;
 
   const handleServiceSelect = (val: string) => {
@@ -205,7 +206,7 @@ export default function ContactPageView({
                       className="form-input"
                     />
                   </div>
-
+                  {/*
                   <div className="form-group">
                     <div className="form-label-row">
                       <label>Primary Area of Interest</label>
@@ -226,7 +227,8 @@ export default function ContactPageView({
                     </div>
                   </div>
 
-                  <div className="form-group">
+                 
+               <div className="form-group">
                     <div className="form-label-row">
                       <label>Estimated Project Budget</label>
                       <span className="optional-badge">Optional</span>
@@ -244,6 +246,7 @@ export default function ContactPageView({
                       ))}
                     </div>
                   </div>
+                  */}
 
                   <div className="form-group">
                     <div className="form-label-row">
